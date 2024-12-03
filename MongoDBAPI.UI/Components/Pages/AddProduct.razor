@@ -1,0 +1,92 @@
+﻿@page "/add-product"
+@inject IProductService ProductService
+@implements IDisposable
+@inject NavigationManager NavigationManager
+
+<h3>Agregar Producto</h3>
+
+<EditForm Model="product" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Nombre</label>
+        <InputText class="form-control" @bind-Value="product.NombreP" />
+        <ValidationMessage For="@(() => product.NombreP)" />
+    </div>
+    <div class="form-group">
+        <label>Categoria</label>
+        <InputText class="form-control" @bind-Value="product.Categoria" />
+        <ValidationMessage For="@(() => product.Categoria)" />
+    </div>
+    <div class="form-group">
+        <label>Proveedor</label>
+        <InputText class="form-control" @bind-Value="product.Proveedor" />
+        <ValidationMessage For="@(() => product.Proveedor)" />
+    </div>
+    <div class="form-group">
+        <label>Precio</label>
+        <InputNumber class="form-control" @bind-Value="product.Precio" />
+        <ValidationMessage For="@(() => product.Precio)" />
+    </div>
+    <div class="form-group">
+        <label>Stock</label>
+        <InputNumber class="form-control" @bind-Value="product.Stock" />
+        <ValidationMessage For="@(() => product.Stock)" />
+    </div>
+    <div class="form-group">
+        <label>Descripción</label>
+        <InputTextArea class="form-control" @bind-Value="product.Descripcion" />
+        <ValidationMessage For="@(() => product.Descripcion)" />
+    </div>
+    <div class="form-group">
+        <label>Imagen (URL)</label>
+        <InputText class="form-control" @bind-Value="product.Imagen" />
+        <ValidationMessage For="@(() => product.Imagen)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary m-1">Agregar Producto</button>
+    <button type="button" class="btn btn-secondary m-1" @onclick="Cancel">Cancelar</button>
+</EditForm>
+
+@if (successMessage != null)
+{
+    <p class="text-success">@successMessage</p>
+}
+
+@if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
+@code {
+    private Product product = new Product();
+    private string successMessage;
+    private string errorMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await ProductService.SaveProduct(product);
+            successMessage = "Producto agregado correctamente.";
+            errorMessage = null;
+            product = new Product(); // Reiniciar el formulario
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al agregar producto: {ex.Message}";
+            successMessage = null;
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/home");
+    }
+
+    public void Dispose()
+    {
+        // Aquí puedes liberar recursos si es necesario
+    }
+}

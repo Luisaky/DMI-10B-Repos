@@ -1,0 +1,4 @@
+@MongoDBAPI10B_HostAddress = http://10.10.50.52:5137
+
+GET {{MongoDBAPI10B_HostAddress}}/api/product
+Accept: application/json
